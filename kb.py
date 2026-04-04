@@ -16,7 +16,7 @@ SECTION_CATEGORY_MAP = {
 }
 
 
-def _parse_tool_item(line: str, category: str, date: str, index: int) -> dict:
+def _parse_tool_item(line: str, category: str, slug: str, date: str, index: int) -> dict:
     """Parse: - **Name** — Description | url | Effort: level"""
     m = re.match(
         r"^- \*\*(.+?)\*\*\s*[—–-]\s*(.+?)\s*\|\s*(https?://[^\s|]+)\s*\|\s*Effort:\s*(\S+)",
@@ -25,7 +25,7 @@ def _parse_tool_item(line: str, category: str, date: str, index: int) -> dict:
     if m:
         title, summary, url, effort = m.group(1), m.group(2), m.group(3), m.group(4)
         return {
-            "id": f"{category}-{date}-{index:03d}",
+            "id": f"{category}-{slug}-{date}-{index:03d}",
             "category": category,
             "title": title,
             "summary": summary.strip(),
@@ -35,7 +35,7 @@ def _parse_tool_item(line: str, category: str, date: str, index: int) -> dict:
     return None
 
 
-def _parse_paper_item(line: str, category: str, date: str, index: int) -> dict:
+def _parse_paper_item(line: str, category: str, slug: str, date: str, index: int) -> dict:
     """Parse: - **Title** (Authors) — Summary | url"""
     m = re.match(
         r"^- \*\*(.+?)\*\*\s*\([^)]+\)\s*[—–-]\s*(.+?)\s*\|\s*(https?://[^\s|]+)",
@@ -44,7 +44,7 @@ def _parse_paper_item(line: str, category: str, date: str, index: int) -> dict:
     if m:
         title, summary, url = m.group(1), m.group(2), m.group(3)
         return {
-            "id": f"{category}-{date}-{index:03d}",
+            "id": f"{category}-{slug}-{date}-{index:03d}",
             "category": category,
             "title": title,
             "summary": summary.strip(),
@@ -90,13 +90,13 @@ def _parse_actionable_item(line: str) -> dict:
     return None
 
 
-def _parse_link_item(line: str, category: str, date: str, index: int) -> dict:
+def _parse_link_item(line: str, category: str, slug: str, date: str, index: int) -> dict:
     """Parse: - url — Description"""
     m = re.match(r"^- (https?://[^\s|]+)\s*[—–-]\s*(.+)", line)
     if m:
         url, description = m.group(1), m.group(2)
         return {
-            "id": f"{category}-{date}-{index:03d}",
+            "id": f"{category}-{slug}-{date}-{index:03d}",
             "category": category,
             "title": description.strip(),
             "summary": description.strip(),
@@ -106,13 +106,13 @@ def _parse_link_item(line: str, category: str, date: str, index: int) -> dict:
     return None
 
 
-def _parse_bold_item(line: str, category: str, date: str, index: int) -> dict:
+def _parse_bold_item(line: str, category: str, slug: str, date: str, index: int) -> dict:
     """Parse: - **Title** — Description"""
     m = re.match(r"^- \*\*(.+?)\*\*\s*[—–-]\s*(.+)", line)
     if m:
         title, summary = m.group(1), m.group(2)
         return {
-            "id": f"{category}-{date}-{index:03d}",
+            "id": f"{category}-{slug}-{date}-{index:03d}",
             "category": category,
             "title": title.strip(),
             "summary": summary.strip(),
@@ -122,13 +122,13 @@ def _parse_bold_item(line: str, category: str, date: str, index: int) -> dict:
     return None
 
 
-def _parse_plain_item(line: str, category: str, date: str, index: int) -> dict:
+def _parse_plain_item(line: str, category: str, slug: str, date: str, index: int) -> dict:
     """Parse: - plain text description"""
     m = re.match(r"^- (.+)", line)
     if m:
         text = m.group(1).strip()
         return {
-            "id": f"{category}-{date}-{index:03d}",
+            "id": f"{category}-{slug}-{date}-{index:03d}",
             "category": category,
             "title": text,
             "summary": text,
@@ -195,22 +195,22 @@ def parse_processed_markdown(text: str, processed_path: str) -> dict:
         if current_category == "actionable":
             item = _parse_actionable_item(line)
         elif current_category == "tool":
-            item = _parse_tool_item(line, current_category, date, idx)
+            item = _parse_tool_item(line, current_category, filename, date, idx)
         elif current_category == "paper":
-            item = _parse_paper_item(line, current_category, date, idx)
+            item = _parse_paper_item(line, current_category, filename, date, idx)
         elif current_category == "link":
-            item = _parse_link_item(line, current_category, date, idx)
+            item = _parse_link_item(line, current_category, filename, date, idx)
         elif current_category in ("announcement", "technique"):
-            item = _parse_bold_item(line, current_category, date, idx)
+            item = _parse_bold_item(line, current_category, filename, date, idx)
         elif current_category == "trend":
             # Try bold first, fall back to plain
-            item = _parse_bold_item(line, current_category, date, idx)
+            item = _parse_bold_item(line, current_category, filename, date, idx)
             if item is None:
-                item = _parse_plain_item(line, current_category, date, idx)
+                item = _parse_plain_item(line, current_category, filename, date, idx)
 
         if item is None:
             # Fallback: plain item
-            item = _parse_plain_item(line, current_category, date, idx)
+            item = _parse_plain_item(line, current_category, filename, date, idx)
 
         if item:
             items.append(item)
@@ -359,7 +359,7 @@ def rebuild_index(db_path: str, processed_dir: Path = None) -> sqlite3.Connectio
                 for item in newsletter["items"]:
                     status = old_statuses.get(item["id"], "pending")
                     conn.execute(
-                        "INSERT OR IGNORE INTO items "
+                        "INSERT OR REPLACE INTO items "
                         "(id, newsletter_id, category, title, summary, url, "
                         "effort, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         (item["id"], newsletter["id"], item["category"],
