@@ -15,15 +15,10 @@ SECTION_CATEGORY_MAP = {
 }
 
 
-def _slugify(name: str) -> str:
-    """Convert a newsletter name to a slug (lowercase, hyphens)."""
-    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
-
-
 def _parse_tool_item(line: str, category: str, date: str, index: int) -> dict:
     """Parse: - **Name** — Description | url | Effort: level"""
     m = re.match(
-        r"^- \*\*(.+?)\*\*\s*[—–-]\s*(.+?)\s*\|\s*(https?://\S+)\s*\|\s*Effort:\s*(\S+)",
+        r"^- \*\*(.+?)\*\*\s*[—–-]\s*(.+?)\s*\|\s*(https?://[^\s|]+)\s*\|\s*Effort:\s*(\S+)",
         line,
     )
     if m:
@@ -42,7 +37,7 @@ def _parse_tool_item(line: str, category: str, date: str, index: int) -> dict:
 def _parse_paper_item(line: str, category: str, date: str, index: int) -> dict:
     """Parse: - **Title** (Authors) — Summary | url"""
     m = re.match(
-        r"^- \*\*(.+?)\*\*\s*\([^)]+\)\s*[—–-]\s*(.+?)\s*\|\s*(https?://\S+)",
+        r"^- \*\*(.+?)\*\*\s*\([^)]+\)\s*[—–-]\s*(.+?)\s*\|\s*(https?://[^\s|]+)",
         line,
     )
     if m:
@@ -58,12 +53,12 @@ def _parse_paper_item(line: str, category: str, date: str, index: int) -> dict:
     return None
 
 
-def _parse_actionable_item(line: str, date: str) -> dict:
+def _parse_actionable_item(line: str) -> dict:
     """Parse: - [ ] Description — *effort* — url | action-ID
               - [ ] Description — *effort* | action-ID"""
     # With URL
     m = re.match(
-        r"^- \[ \]\s+(.+?)\s*[—–-]\s*\*(.+?)\*\s*[—–-]\s*(https?://\S+)\s*\|\s*(action-[\w-]+)",
+        r"^- \[ \]\s+(.+?)\s*[—–-]\s*\*(.+?)\*\s*[—–-]\s*(https?://[^\s|]+)\s*\|\s*(action-[\w-]+)",
         line,
     )
     if m:
@@ -96,7 +91,7 @@ def _parse_actionable_item(line: str, date: str) -> dict:
 
 def _parse_link_item(line: str, category: str, date: str, index: int) -> dict:
     """Parse: - url — Description"""
-    m = re.match(r"^- (https?://\S+)\s*[—–-]\s*(.+)", line)
+    m = re.match(r"^- (https?://[^\s|]+)\s*[—–-]\s*(.+)", line)
     if m:
         url, description = m.group(1), m.group(2)
         return {
@@ -150,12 +145,13 @@ def parse_processed_markdown(text: str, processed_path: str) -> dict:
     lines = text.splitlines()
 
     # Parse H1: # Newsletter Name — YYYY-MM-DD
-    source = None
-    date = None
     h1_match = re.match(r"^# (.+?)\s*[—–-]\s*(\d{4}-\d{2}-\d{2})", lines[0])
-    if h1_match:
-        source = h1_match.group(1).strip()
-        date = h1_match.group(2).strip()
+    if not h1_match:
+        raise ValueError(
+            f"Expected H1 header matching '# Name — YYYY-MM-DD', got: {lines[0]!r}"
+        )
+    source = h1_match.group(1).strip()
+    date = h1_match.group(2).strip()
 
     # Parse metadata block
     source_email = None
@@ -196,7 +192,7 @@ def parse_processed_markdown(text: str, processed_path: str) -> dict:
         item = None
 
         if current_category == "actionable":
-            item = _parse_actionable_item(line, date)
+            item = _parse_actionable_item(line)
         elif current_category == "tool":
             item = _parse_tool_item(line, current_category, date, idx)
         elif current_category == "paper":
