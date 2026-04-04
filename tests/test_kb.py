@@ -1,6 +1,7 @@
 import sys
 import os
 import sqlite3
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -129,3 +130,74 @@ def test_rebuild_index_from_fixtures():
         conn.close()
     finally:
         os.unlink(db_path)
+
+
+PYTHON = str(Path(__file__).parent.parent / ".venv" / "bin" / "python")
+KB_SCRIPT = str(Path(__file__).parent.parent / "kb.py")
+TEST_DB = "/tmp/test_kb_cli.sqlite"
+
+
+def _run_kb(*args: str) -> subprocess.CompletedProcess:
+    """Run kb.py as a subprocess pointing at fixtures."""
+    cmd = [PYTHON, KB_SCRIPT,
+           "--db", TEST_DB,
+           "--processed-dir", str(FIXTURES / "processed")]
+    cmd.extend(args)
+    return subprocess.run(cmd, capture_output=True, text=True,
+                          cwd=str(Path(__file__).parent.parent))
+
+
+def test_cli_rebuild():
+    """kb.py rebuild should create the database."""
+    result = _run_kb("rebuild")
+    assert result.returncode == 0
+    assert "rebuilt" in result.stdout.lower() or "Rebuilt" in result.stdout
+
+
+def test_cli_search():
+    """kb.py search should find items matching a query."""
+    _run_kb("rebuild")
+    result = _run_kb("search", "MCPHub")
+    assert result.returncode == 0
+    assert "MCPHub" in result.stdout
+
+
+def test_cli_actions():
+    """kb.py actions should list pending actionable items."""
+    _run_kb("rebuild")
+    result = _run_kb("actions")
+    assert result.returncode == 0
+    assert "action-2026-04-01" in result.stdout
+
+
+def test_cli_actions_mark():
+    """kb.py actions mark should update item status."""
+    _run_kb("rebuild")
+    result = _run_kb("actions", "mark", "action-2026-04-01-001", "tried")
+    assert result.returncode == 0
+    result2 = _run_kb("actions", "--all")
+    assert "tried" in result2.stdout
+
+
+def test_cli_digest():
+    """kb.py digest should display the daily digest."""
+    _run_kb("rebuild")
+    result = _run_kb("digest", "--date", "2026-04-01")
+    assert result.returncode == 0
+    assert "Claude 4.5" in result.stdout
+
+
+def test_cli_tools():
+    """kb.py tools should show tools mentioned by multiple sources."""
+    _run_kb("rebuild")
+    result = _run_kb("tools", "--min-sources", "2")
+    assert result.returncode == 0
+    assert "MCPHub" in result.stdout
+
+
+def test_cli_stats():
+    """kb.py stats should show summary statistics."""
+    _run_kb("rebuild")
+    result = _run_kb("stats")
+    assert result.returncode == 0
+    assert "2" in result.stdout  # 2 newsletters

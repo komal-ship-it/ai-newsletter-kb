@@ -1,8 +1,15 @@
 """Knowledge base parser for processed newsletter markdown files."""
 
+import argparse
 import re
 import sqlite3
+import sys
+from datetime import datetime, timedelta
 from pathlib import Path
+
+
+DB_DEFAULT = "kb.sqlite"
+PROCESSED_DEFAULT = "processed"
 
 
 SECTION_CATEGORY_MAP = {
@@ -369,3 +376,291 @@ def rebuild_index(db_path: str, processed_dir: Path = None) -> sqlite3.Connectio
 
     conn.commit()
     return conn
+
+
+# ---------------------------------------------------------------------------
+# CLI helpers
+# ---------------------------------------------------------------------------
+
+def _get_conn(args) -> sqlite3.Connection:
+    """Connect to the SQLite database; exit with an error if it doesn't exist."""
+    db_path = Path(args.db)
+    if not db_path.exists():
+        print(f"Error: database not found at {db_path}. Run 'kb.py rebuild' first.",
+              file=sys.stderr)
+        sys.exit(1)
+    conn = sqlite3.connect(str(db_path))
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+# ---------------------------------------------------------------------------
+# Subcommand implementations
+# ---------------------------------------------------------------------------
+
+def cmd_rebuild(args) -> None:
+    """Rebuild the SQLite index from processed markdown files."""
+    processed_dir = Path(args.processed_dir)
+    conn = rebuild_index(args.db, processed_dir=processed_dir)
+    n_newsletters = conn.execute("SELECT COUNT(*) FROM newsletters").fetchone()[0]
+    n_items = conn.execute("SELECT COUNT(*) FROM items").fetchone()[0]
+    n_digests = conn.execute("SELECT COUNT(*) FROM digests").fetchone()[0]
+    conn.close()
+    print(f"Rebuilt {args.db}: {n_newsletters} newsletters, {n_items} items, "
+          f"{n_digests} digests.")
+
+
+def cmd_search(args) -> None:
+    """Full-text search over items."""
+    conn = _get_conn(args)
+
+    query = args.query
+    params: list = [query]
+
+    sql = (
+        "SELECT i.id, i.category, i.title, i.summary, i.url, i.date "
+        "FROM items_fts f "
+        "JOIN items i ON i.rowid = f.rowid "
+        "WHERE items_fts MATCH ?"
+    )
+
+    if args.category:
+        sql += " AND i.category = ?"
+        params.append(args.category)
+
+    if args.days:
+        cutoff = (datetime.now() - timedelta(days=args.days)).strftime("%Y-%m-%d")
+        sql += " AND i.date >= ?"
+        params.append(cutoff)
+
+    rows = conn.execute(sql, params).fetchall()
+    conn.close()
+
+    if not rows:
+        print("No results found.")
+        return
+
+    for row in rows:
+        print(f"[{row['date']}] [{row['category']}] {row['title']}")
+        if row['summary'] and row['summary'] != row['title']:
+            print(f"  {row['summary']}")
+        if row['url']:
+            print(f"  {row['url']}")
+        print(f"  id: {row['id']}")
+        print()
+
+
+def cmd_actions(args) -> None:
+    """List or mark actionable items."""
+    # Handle mark sub-subcommand
+    if getattr(args, 'actions_command', None) == 'mark':
+        conn = _get_conn(args)
+        conn.execute(
+            "UPDATE items SET status = ? WHERE id = ?",
+            (args.status, args.action_id),
+        )
+        conn.commit()
+        rows_affected = conn.execute(
+            "SELECT changes()"
+        ).fetchone()[0]
+        conn.close()
+        if rows_affected:
+            print(f"Marked {args.action_id} as '{args.status}'.")
+        else:
+            print(f"No action found with id '{args.action_id}'.", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    conn = _get_conn(args)
+
+    params: list = []
+    sql = (
+        "SELECT id, title, effort, status, date "
+        "FROM items WHERE category = 'actionable'"
+    )
+
+    if not getattr(args, 'all', False):
+        sql += " AND status = 'pending'"
+
+    if getattr(args, 'effort', None):
+        sql += " AND effort = ?"
+        params.append(args.effort)
+
+    sql += " ORDER BY date DESC, id"
+
+    rows = conn.execute(sql, params).fetchall()
+    conn.close()
+
+    if not rows:
+        print("No actionable items found.")
+        return
+
+    for row in rows:
+        status_tag = f"[{row['status']}]" if row['status'] != 'pending' else ""
+        effort_tag = f"({row['effort']})" if row['effort'] else ""
+        parts = [row['id'], effort_tag, status_tag, row['title']]
+        print("  ".join(p for p in parts if p))
+
+
+def cmd_digest(args) -> None:
+    """Display daily digest content."""
+    conn = _get_conn(args)
+    processed_dir = Path(args.processed_dir)
+
+    if getattr(args, 'date', None):
+        dates = [args.date]
+    elif getattr(args, 'week', False):
+        cutoff = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+        rows = conn.execute(
+            "SELECT date FROM digests WHERE date >= ? ORDER BY date DESC", (cutoff,)
+        ).fetchall()
+        dates = [r['date'] for r in rows]
+    else:
+        row = conn.execute(
+            "SELECT date FROM digests ORDER BY date DESC LIMIT 1"
+        ).fetchone()
+        dates = [row['date']] if row else []
+
+    conn.close()
+
+    if not dates:
+        print("No digests found.")
+        return
+
+    for date in dates:
+        digest_path = processed_dir / date / "daily-digest.md"
+        if digest_path.exists():
+            print(digest_path.read_text())
+        else:
+            print(f"Digest for {date}: (file not found at {digest_path})")
+        print()
+
+
+def cmd_tools(args) -> None:
+    """Show tools mentioned across multiple newsletter sources."""
+    conn = _get_conn(args)
+
+    min_sources = getattr(args, 'min_sources', 1) or 1
+
+    sql = (
+        "SELECT i.title, COUNT(DISTINCT n.source) as source_count, "
+        "GROUP_CONCAT(DISTINCT n.source) as sources, i.url "
+        "FROM items i "
+        "JOIN newsletters n ON n.id = i.newsletter_id "
+        "WHERE i.category = 'tool' "
+        "GROUP BY i.title "
+        "HAVING source_count >= ? "
+        "ORDER BY source_count DESC, i.title"
+    )
+
+    rows = conn.execute(sql, [min_sources]).fetchall()
+    conn.close()
+
+    if not rows:
+        print(f"No tools found mentioned by {min_sources}+ sources.")
+        return
+
+    for row in rows:
+        print(f"{row['title']}  ({row['source_count']} sources: {row['sources']})")
+        if row['url']:
+            print(f"  {row['url']}")
+
+
+def cmd_stats(args) -> None:
+    """Show summary statistics about the knowledge base."""
+    conn = _get_conn(args)
+
+    n_newsletters = conn.execute("SELECT COUNT(*) FROM newsletters").fetchone()[0]
+    n_items = conn.execute("SELECT COUNT(*) FROM items").fetchone()[0]
+    n_pending = conn.execute(
+        "SELECT COUNT(*) FROM items WHERE category='actionable' AND status='pending'"
+    ).fetchone()[0]
+    n_tried = conn.execute(
+        "SELECT COUNT(*) FROM items WHERE category='actionable' AND status='tried'"
+    ).fetchone()[0]
+    n_skipped = conn.execute(
+        "SELECT COUNT(*) FROM items WHERE category='actionable' AND status='skipped'"
+    ).fetchone()[0]
+    n_digests = conn.execute("SELECT COUNT(*) FROM digests").fetchone()[0]
+
+    conn.close()
+
+    print(f"Newsletters : {n_newsletters}")
+    print(f"Items       : {n_items}")
+    print(f"Digests     : {n_digests}")
+    print(f"Actions")
+    print(f"  pending   : {n_pending}")
+    print(f"  tried     : {n_tried}")
+    print(f"  skipped   : {n_skipped}")
+
+
+# ---------------------------------------------------------------------------
+# argparse setup and main
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="AI Newsletter Knowledge Base CLI",
+        prog="kb.py",
+    )
+    parser.add_argument("--db", default=DB_DEFAULT,
+                        help=f"Path to SQLite database (default: {DB_DEFAULT})")
+    parser.add_argument("--processed-dir", default=PROCESSED_DEFAULT,
+                        help=f"Path to processed newsletters directory "
+                             f"(default: {PROCESSED_DEFAULT})")
+
+    subparsers = parser.add_subparsers(dest="command", metavar="COMMAND")
+    subparsers.required = True
+
+    # rebuild
+    subparsers.add_parser("rebuild", help="Rebuild the database index")
+
+    # search
+    sp_search = subparsers.add_parser("search", help="Full-text search items")
+    sp_search.add_argument("query", help="Search query")
+    sp_search.add_argument("--category", help="Filter by category")
+    sp_search.add_argument("--days", type=int,
+                           help="Limit to items from the last N days")
+
+    # actions
+    sp_actions = subparsers.add_parser("actions", help="List or mark actions")
+    sp_actions.add_argument("--effort", help="Filter by effort level")
+    sp_actions.add_argument("--all", action="store_true",
+                            help="Show all statuses (not just pending)")
+    actions_sub = sp_actions.add_subparsers(dest="actions_command")
+    sp_mark = actions_sub.add_parser("mark", help="Update action status")
+    sp_mark.add_argument("action_id", help="Action ID to mark")
+    sp_mark.add_argument("status", choices=["tried", "skipped", "pending"],
+                         help="New status")
+
+    # digest
+    sp_digest = subparsers.add_parser("digest", help="Show daily digest")
+    sp_digest.add_argument("--date", help="Date (YYYY-MM-DD)")
+    sp_digest.add_argument("--week", action="store_true",
+                           help="Show digests for the last 7 days")
+
+    # tools
+    sp_tools = subparsers.add_parser("tools", help="Show tools by source count")
+    sp_tools.add_argument("--min-sources", type=int, default=1,
+                          help="Minimum number of sources mentioning the tool")
+
+    # stats
+    subparsers.add_parser("stats", help="Show knowledge base statistics")
+
+    args = parser.parse_args()
+
+    dispatch = {
+        "rebuild": cmd_rebuild,
+        "search": cmd_search,
+        "actions": cmd_actions,
+        "digest": cmd_digest,
+        "tools": cmd_tools,
+        "stats": cmd_stats,
+    }
+
+    fn = dispatch[args.command]
+    fn(args)
+
+
+if __name__ == "__main__":
+    main()
