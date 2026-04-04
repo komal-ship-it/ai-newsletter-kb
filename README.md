@@ -27,6 +27,16 @@ python kb.py actions mark <id> tried        # track progress
 2. Create the `AI-Newsletters` label in Gmail and apply it to your subscriptions
 3. The remote trigger handles the rest automatically
 
+## One-Time Setup
+
+After cloning, configure the git hook for auto-rebuild:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This automatically rebuilds the SQLite index whenever you `git pull` new newsletters.
+
 ## Requirements
 
 - Python 3.8+

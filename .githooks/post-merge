@@ -1,0 +1,4 @@
+#!/bin/sh
+# Auto-rebuild SQLite index after pulling new newsletter data
+echo "Rebuilding knowledge base index..."
+python3 kb.py rebuild
