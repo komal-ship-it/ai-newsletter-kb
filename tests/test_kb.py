@@ -1,5 +1,7 @@
 import sys
 import os
+import sqlite3
+import tempfile
 from pathlib import Path
 
 # Add repo root to path so we can import kb
@@ -74,3 +76,56 @@ def test_parse_digest_metadata():
     assert result["date"] == "2026-04-01"
     assert "Claude 4.5" in result["one_line_summary"]
     assert "MCPHub" in result["one_line_summary"]
+
+
+def test_create_database_schema():
+    """create_database should create all tables and FTS index."""
+    from kb import create_database
+
+    with tempfile.NamedTemporaryFile(suffix=".sqlite") as f:
+        db_path = f.name
+    conn = create_database(db_path)
+    cursor = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+    )
+    tables = {row[0] for row in cursor}
+    assert "newsletters" in tables
+    assert "items" in tables
+    assert "digests" in tables
+    assert "items_fts" in tables
+    conn.close()
+    os.unlink(db_path)
+
+
+def test_rebuild_index_from_fixtures():
+    """rebuild_index should parse fixtures and populate the database."""
+    from kb import rebuild_index
+
+    with tempfile.NamedTemporaryFile(suffix=".sqlite", delete=False) as f:
+        db_path = f.name
+    try:
+        conn = rebuild_index(
+            db_path, processed_dir=FIXTURES / "processed"
+        )
+
+        # Should have 2 newsletters
+        count = conn.execute("SELECT COUNT(*) FROM newsletters").fetchone()[0]
+        assert count == 2
+
+        # Should have items from both newsletters
+        item_count = conn.execute("SELECT COUNT(*) FROM items").fetchone()[0]
+        assert item_count > 0
+
+        # Should have 1 digest
+        digest_count = conn.execute("SELECT COUNT(*) FROM digests").fetchone()[0]
+        assert digest_count == 1
+
+        # FTS search should work
+        results = conn.execute(
+            "SELECT title FROM items_fts WHERE items_fts MATCH 'MCPHub'"
+        ).fetchall()
+        assert len(results) >= 1
+
+        conn.close()
+    finally:
+        os.unlink(db_path)

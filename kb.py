@@ -1,6 +1,7 @@
 """Knowledge base parser for processed newsletter markdown files."""
 
 import re
+import sqlite3
 from pathlib import Path
 
 
@@ -247,3 +248,124 @@ def parse_digest_markdown(text: str, date: str) -> dict:
         "date": date,
         "one_line_summary": one_line_summary,
     }
+
+
+SCHEMA = """
+CREATE TABLE IF NOT EXISTS newsletters (
+    id TEXT PRIMARY KEY,
+    source TEXT,
+    date TEXT,
+    raw_path TEXT,
+    processed_path TEXT
+);
+
+CREATE TABLE IF NOT EXISTS items (
+    id TEXT PRIMARY KEY,
+    newsletter_id TEXT,
+    category TEXT,
+    title TEXT,
+    summary TEXT,
+    url TEXT,
+    effort TEXT,
+    status TEXT DEFAULT 'pending',
+    date TEXT,
+    FOREIGN KEY (newsletter_id) REFERENCES newsletters(id)
+);
+
+CREATE TABLE IF NOT EXISTS digests (
+    date TEXT PRIMARY KEY,
+    path TEXT,
+    one_line_summary TEXT
+);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS items_fts USING fts5(
+    title, summary
+);
+
+CREATE TRIGGER IF NOT EXISTS items_ai AFTER INSERT ON items BEGIN
+    INSERT INTO items_fts(rowid, title, summary)
+    VALUES (new.rowid, new.title, new.summary);
+END;
+"""
+
+
+def create_database(db_path: str) -> sqlite3.Connection:
+    """Create a new SQLite database with the KB schema."""
+    conn = sqlite3.connect(db_path)
+    conn.executescript(SCHEMA)
+    return conn
+
+
+def rebuild_index(db_path: str, processed_dir: Path = None) -> sqlite3.Connection:
+    """Rebuild the SQLite index from all processed markdown files.
+
+    Preserves action item statuses (tried/skipped) across rebuilds.
+    """
+    if processed_dir is None:
+        processed_dir = Path("processed")
+
+    # Load existing action statuses before dropping
+    old_statuses = {}
+    if Path(db_path).exists():
+        try:
+            old_conn = sqlite3.connect(db_path)
+            for row in old_conn.execute(
+                "SELECT id, status FROM items WHERE status != 'pending'"
+            ):
+                old_statuses[row[0]] = row[1]
+            old_conn.close()
+        except sqlite3.OperationalError:
+            pass
+
+    # Drop and recreate
+    if Path(db_path).exists():
+        Path(db_path).unlink()
+
+    conn = create_database(db_path)
+
+    if not processed_dir.exists():
+        return conn
+
+    # Walk all date directories
+    for date_dir in sorted(processed_dir.iterdir()):
+        if not date_dir.is_dir():
+            continue
+        date_str = date_dir.name
+
+        for md_file in sorted(date_dir.glob("*.md")):
+            if md_file.name == "daily-digest.md":
+                text = md_file.read_text()
+                digest = parse_digest_markdown(text, date_str)
+                conn.execute(
+                    "INSERT OR REPLACE INTO digests (date, path, one_line_summary) "
+                    "VALUES (?, ?, ?)",
+                    (digest["date"],
+                     str(md_file.relative_to(processed_dir.parent)),
+                     digest["one_line_summary"]),
+                )
+            else:
+                rel_path = str(md_file.relative_to(processed_dir.parent))
+                text = md_file.read_text()
+                newsletter = parse_processed_markdown(text, rel_path)
+
+                conn.execute(
+                    "INSERT OR REPLACE INTO newsletters "
+                    "(id, source, date, raw_path, processed_path) "
+                    "VALUES (?, ?, ?, ?, ?)",
+                    (newsletter["id"], newsletter["source"], newsletter["date"],
+                     f"raw/{date_str}/{md_file.stem}.md", rel_path),
+                )
+
+                for item in newsletter["items"]:
+                    status = old_statuses.get(item["id"], "pending")
+                    conn.execute(
+                        "INSERT OR IGNORE INTO items "
+                        "(id, newsletter_id, category, title, summary, url, "
+                        "effort, status, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        (item["id"], newsletter["id"], item["category"],
+                         item["title"], item["summary"], item["url"],
+                         item["effort"], status, newsletter["date"]),
+                    )
+
+    conn.commit()
+    return conn
