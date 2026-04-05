@@ -63,10 +63,11 @@ def _parse_paper_item(line: str, category: str, slug: str, date: str, index: int
 
 def _parse_actionable_item(line: str) -> dict:
     """Parse: - [ ] Description — *effort* — url | action-ID
-              - [ ] Description — *effort* | action-ID"""
-    # With URL
+              - [ ] Description — *effort* | action-ID
+              - [ ] Description — *effort* — action-ID (agent-produced variant)"""
+    # With URL and pipe-separated action-ID
     m = re.match(
-        r"^- \[ \]\s+(.+?)\s*[—–-]\s*\*(.+?)\*\s*[—–-]\s*(https?://[^\s|]+)\s*\|\s*(action-[\w-]+)",
+        r"^- \[ \]\s+(.+?)\s*[—–-]\s*\*(.+?)\*\s*[—–-]\s*(https?://[^\s|]+)\s*[|—–-]\s*(action-[\w-]+)",
         line,
     )
     if m:
@@ -79,9 +80,9 @@ def _parse_actionable_item(line: str) -> dict:
             "url": url.strip(),
             "effort": effort.strip(),
         }
-    # Without URL
+    # Without URL — accept | or em/en dash before action-ID
     m = re.match(
-        r"^- \[ \]\s+(.+?)\s*[—–-]\s*\*(.+?)\*\s*\|\s*(action-[\w-]+)",
+        r"^- \[ \]\s+(.+?)\s*[—–-]\s*\*(.+?)\*\s*[|—–-]\s*(action-[\w-]+)",
         line,
     )
     if m:
