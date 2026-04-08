@@ -1,21 +1,17 @@
 {
-  "last_run": "2026-04-06T00:00:00Z",
+  "last_run": "2026-04-07T00:00:00Z",
   "last_run_status": "success",
   "last_processed_ids": [
-    "19d62730b119e6de",
-    "19d5fd75bcf0b7dd",
-    "19d5ddd7d7294117",
-    "19d5dbe88a1c6495",
-    "19d5c1a932679470",
-    "19d58b7c5f2ab08e",
-    "19d53916dd9638b1",
-    "19d4e6a7034ccf31",
-    "19d441d9bece2cfb",
-    "19d3ef756a1ac982",
-    "19d39d1c6e5eb407",
-    "19d39b4676ce7bcd"
+    "19d6794e51e195b7",
+    "19d6531d31acf601",
+    "19d650656b4e1545",
+    "19d634ba0e70d10f",
+    "19d631c1d5670323",
+    "19d6305ad95fd580",
+    "19d62e3e524b6ff0",
+    "19d63b80e76f9b8a"
   ],
-  "newsletters_seen": 2,
+  "newsletters_seen": 8,
   "skipped_ids": [
     "19d60af8d3385545",
     "19d6077dc5e8ce87",
@@ -42,7 +38,15 @@
     "19d43e313f35f51a",
     "19d3e648387b2a28",
     "19d39a7a9cb3c2a6",
-    "19d394e1a8e51ebb"
+    "19d394e1a8e51ebb",
+    "19d677e2029bc76a",
+    "19d669077ecd575c",
+    "19d65a64cb93e3f3",
+    "19d652a7f5426818",
+    "19d6430fb1bdcee7",
+    "19d636ffea67bbf2",
+    "19d6357dddf06a27",
+    "19d63509b99af538"
   ],
   "skip_reasons": {
     "19d60af8d3385545": "skool stat-only digest (Thinking Stuff)",
@@ -70,7 +74,15 @@
     "19d43e313f35f51a": "skool stat-only digest (AI Automation Mastery)",
     "19d3e648387b2a28": "sender not in whitelist (dan@tldrnewsletter.com)",
     "19d39a7a9cb3c2a6": "skool stat-only digest (AI Enthusiasts)",
-    "19d394e1a8e51ebb": "skool stat-only digest (Born Idea)"
+    "19d394e1a8e51ebb": "skool stat-only digest (Born Idea)",
+    "19d677e2029bc76a": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)",
+    "19d669077ecd575c": "skool notification-only (AI Automation Agency Hub — 1 new notification wrapper, no article text)",
+    "19d65a64cb93e3f3": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)",
+    "19d652a7f5426818": "skool notification-only (Born Idea — 1 new notification wrapper, no article text)",
+    "19d6430fb1bdcee7": "skool notification-only (AI Automation Society — 1 new notification wrapper, no article text)",
+    "19d636ffea67bbf2": "skool notification-only (AI Automation Agency Hub — 1 new notification wrapper, no article text)",
+    "19d6357dddf06a27": "skool notification-only (The AI Advantage — 1 new notification wrapper, no article text)",
+    "19d63509b99af538": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)"
   },
   "errors": []
 }
