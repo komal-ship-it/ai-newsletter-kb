@@ -1,7 +1,19 @@
 {
-  "last_run": null,
-  "last_run_status": null,
-  "last_processed_ids": [],
-  "newsletters_seen": 0,
+  "last_run": "2026-04-09T00:00:00Z",
+  "last_run_status": "success",
+  "last_processed_ids": [
+    "19d71e45b6987bad",
+    "19d6cbaeea3ca580",
+    "19d6d9f4310a4674",
+    "19d6841c9ca1a937",
+    "19d6f5cae0321b15",
+    "19d6a1fa7cae0a61",
+    "19d6d538ff20fb0c",
+    "19d680a21ddf67b1",
+    "19d6840035018ea4"
+  ],
+  "newsletters_seen": 9,
+  "skipped_ids": [],
+  "skip_reasons": {},
   "errors": []
 }
