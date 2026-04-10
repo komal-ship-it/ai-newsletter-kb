@@ -39,3 +39,13 @@
 ## One-Line Summary
 
 The week's dominant signal is context engineering: Karpathy's self-improving KB, Meta's tribal knowledge pre-compute, and MCP knowledge graphs all point to structured pre-built context as the missing layer that unlocks effective AI agents — and the best implementation is simpler than you think.
+
+---
+
+## Late Additions (backfilled 2026-04-10)
+
+Three additional newsletters from April 7 were not fetched in the original run and were processed on the April 10 run. See separate files:
+
+- `half-baked-v2.md` — AI Copilot for Managers idea ($8.8T/year problem, 83M managers) + Google Stitch UI design tool | action-2026-04-07-025 through action-2026-04-07-027
+- `superhuman-code-v2.md` — Claude Code source code leak analysis (harness > model), Anthropic $30B revenue, `!` backtick syntax for real-time SKILL.md data | action-2026-04-07-028 through action-2026-04-07-030
+- `ai-collective-v2.md` — "AI Is the Next Printing Press" essay (Sophie Levy): human skills first, AI amplifies | action-2026-04-07-031

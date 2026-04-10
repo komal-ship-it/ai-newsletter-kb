@@ -1,0 +1,57 @@
+# AI Collective Newsletter — Raw — 2026-04-07 (edition 2)
+
+**Message ID:** 19d6841c9ca1a937
+**Subject:** The Byte: AI Is the Next Printing Press
+**From:** aicollectivenewsletter@mail.beehiiv.com
+**Date:** 2026-04-07T14:03:54+00:00
+
+---
+
+In this essay, Sophie Levy situates AI within a longer history of technological upheaval, arguing that its most consequential effects on workplaces and communities will be governed not by technical capability alone, but by the human capacities surrounding its adoption. Using the printing press as a historical analogue, she contends that AI becomes corrosive when it is used to evade the interpersonal difficulty through which trust, discernment, and shared responsibility are formed, and constructive when it is used to extend and reinforce those capacities after they have been developed in person.
+
+---
+
+In the 1400s, Johannes Gutenberg invented the printing press in Germany. Scribes chased printing presses out of town, fearing for their jobs and livelihoods. Knowledge that had once been tightly controlled by elites suddenly became accessible to the masses. Ideas could spread without centralized authority, destabilizing institutional power structures almost overnight.
+
+"When AI becomes a substitute for discomfort, it weakens social trust and productivity. When it becomes a rehearsal for it, it strengthens workforce performance."
+
+### Our Modern-Day Printing Press: Artificial Intelligence
+
+Centuries later, people are reacting to AI in the same way. In the past two years, generative AI has moved from novelty to broad experimentation across knowledge-work tasks. AI is not a passing trend. It is a relentless, unavoidable reality of the future. It is already being integrated into workplace tools, procurement plans, and productivity stacks.
+
+The real question is not whether AI will exist in our workplaces and community infrastructure, but how we will choose to use it, and what foundational skills humans must first have to use it effectively. Like the printing press, AI can either deepen human connection or erode it. The difference lies in whether people have developed human intelligence skills required to use it well. Because after all, you can't deploy artificial intelligence without human intelligence to guide it.
+
+AI can reduce friction and enhance efficiency for some communication and coordination tasks, but it does not replicate the incentives and social cues that shape trust in teams. If we are serious about addressing the social and financial crises of disconnection, burnout, loneliness, and cultural erosion in our workplaces and communities, a hybrid in-person & digital approach is not optional; it's imperative.
+
+Simply put:
+1. Humans must be taught human skills locally, relationally, and in person.
+2. But their impact should not stop at the room where they were learned; rather, they should be reinforced through accessible, competent pathways: AI tools.
+
+For example, The Magnet Collective partners with organizations to prepare them to retain who will soon be 30% of their workforce. A company's early-career professionals build communication, collaboration, and decision-making skills by leading a real capstone project for their tenured colleagues. Self-understanding and awareness, what Manhattan University Dean of Engineering Kathryn Jablokow calls an "AI-irreplaceable human skill," is core to the curriculum.
+
+Individual employees improve leadership & interpersonal skills necessary for an ever-evolving workplace, organizations can effectively succession plan, and tenured colleagues see early-career employees in a new light, one earned through responsibility, coordination, and implementation.
+
+Then, AI tools extend that work beyond the room; tools like Tuffy that reinforce reflective practice, expand access, and allow skill development to continue over time, at scale. They aren't leveraged instead of human intelligence, but in service of it.
+
+A 2025 World Economic Forum white paper highlights that employers continue to prioritize skills like analytical thinking, creativity, resilience, and leadership, while also noting uncertainty about which of these skills genAI will meaningfully improve.
+
+### The Parallels We Can't Ignore
+
+By the mid-18th century, after public debate, generational turnover, and hard-earned institutional norm-setting, the printing press became one of the greatest equalizers in human history. Legal frameworks and cultural expectations emerged, not to suppress it, but to integrate it responsibly. Literacy expanded. Accountability increased. Public discourse transformed.
+
+But we cannot wait centuries to adapt this time. Unlike past transitions, AI adoption is happening on organizational timescales, which makes measurement and governance decisions more time-sensitive.
+
+As The AI Collective Co-Founder and Executive Director, Chappy Asel, aptly puts it, "Trust isn't restored through intention—it's earned through participation."
+
+Just as with the printing press, ideas alone are not enough. We must flex our human intelligence muscles before we ask technology to carry the weight of what makes us uncomfortable.
+
+### Conclusion
+
+There's a very daunting fork in the road. One side avoids discomfort, outsources responsibility, and simulates human connection. The other clings to the past and refuses the innovative tools of the present.
+
+But there's a third road, one less traveled. It's one that respects our biological need for real human connection while leveraging the benefits of the technological era we were born into.
+
+The future of our workplaces and community infrastructure will not be decided by what AI can do. But by what we demand humans do first.
+
+---
+About the Author: Sophie Levy is Founder and CEO of The Magnet Collective, an L&D model focused on building the human skills in next-generation leaders that AI cannot replace. She previously served at venture philanthropy firm New Profit, where she helped steward more than $25 million in philanthropic capital.
