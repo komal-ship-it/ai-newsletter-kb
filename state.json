@@ -1,17 +1,14 @@
 {
-  "last_run": "2026-04-07T00:00:00Z",
+  "last_run": "2026-04-11T00:00:00Z",
   "last_run_status": "success",
   "last_processed_ids": [
-    "19d6794e51e195b7",
-    "19d6531d31acf601",
-    "19d650656b4e1545",
-    "19d634ba0e70d10f",
-    "19d631c1d5670323",
-    "19d6305ad95fd580",
-    "19d62e3e524b6ff0",
-    "19d63b80e76f9b8a"
+    "19d6841c9ca1a937",
+    "19d6a1fa7cae0a61",
+    "19d680a21ddf67b1",
+    "superhuman-code-2026-04-07-partial"
   ],
-  "newsletters_seen": 8,
+  "newsletters_seen": 4,
+  "notes": "Superhuman Code newsletter (2026-04-07, thecode@mail.joinsuperhuman.ai, subject: 'OpenAI Anthropic Google Fight Model Copying Meta Goes Open Source') was retrieved with message_id truncated at start of notification. Stored as placeholder ID 'superhuman-code-2026-04-07-partial'. Body was partially captured (mid-article onward). All 4 newsletters written to raw/2026-04-11/ and processed/2026-04-11/.",
   "skipped_ids": [
     "19d60af8d3385545",
     "19d6077dc5e8ce87",
