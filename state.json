@@ -1,17 +1,15 @@
 {
-  "last_run": "2026-04-07T00:00:00Z",
+  "last_run": "2026-04-08T12:00:00Z",
   "last_run_status": "success",
   "last_processed_ids": [
-    "19d6794e51e195b7",
-    "19d6531d31acf601",
-    "19d650656b4e1545",
-    "19d634ba0e70d10f",
-    "19d631c1d5670323",
-    "19d6305ad95fd580",
-    "19d62e3e524b6ff0",
-    "19d63b80e76f9b8a"
+    "19d6cbaeea3ca580",
+    "19d6a1fa7cae0a61",
+    "19d6841c9ca1a937",
+    "19d6840035018ea4",
+    "19d682c3531f35e1",
+    "19d680a21ddf67b1"
   ],
-  "newsletters_seen": 8,
+  "newsletters_seen": 6,
   "skipped_ids": [
     "19d60af8d3385545",
     "19d6077dc5e8ce87",
@@ -46,7 +44,18 @@
     "19d6430fb1bdcee7",
     "19d636ffea67bbf2",
     "19d6357dddf06a27",
-    "19d63509b99af538"
+    "19d63509b99af538",
+    "19d6ca4827818838",
+    "19d6a76f55130738",
+    "19d6a487d141ad1c",
+    "19d69bb2c6daf626",
+    "19d6900ceff47717",
+    "19d687720d4c66b3",
+    "19d68544b65015df",
+    "19d682f9cbb77cd8",
+    "19d681bd6ba7f6db",
+    "19d681b9b23c680b",
+    "19d67eddf149e413"
   ],
   "skip_reasons": {
     "19d60af8d3385545": "skool stat-only digest (Thinking Stuff)",
@@ -82,7 +91,18 @@
     "19d6430fb1bdcee7": "skool notification-only (AI Automation Society — 1 new notification wrapper, no article text)",
     "19d636ffea67bbf2": "skool notification-only (AI Automation Agency Hub — 1 new notification wrapper, no article text)",
     "19d6357dddf06a27": "skool notification-only (The AI Advantage — 1 new notification wrapper, no article text)",
-    "19d63509b99af538": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)"
+    "19d63509b99af538": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)",
+    "19d6ca4827818838": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)",
+    "19d6a76f55130738": "skool notification-only (AI Automation Society — 1 new notification wrapper, no article text)",
+    "19d6a487d141ad1c": "skool notification-only (AI Automation Mastery — 1 new notification wrapper, no article text)",
+    "19d69bb2c6daf626": "skool notification-only (Born Idea — 2 new notifications, snippet only, no article text)",
+    "19d6900ceff47717": "skool course promo notification (AI Automation Society — course sales post, not substantive newsletter content)",
+    "19d687720d4c66b3": "skool notification-only (Claude Code Pirates — 1 new notification wrapper, no article text)",
+    "19d68544b65015df": "skool notification-only (AI Automation Society — 1 new notification wrapper, no article text)",
+    "19d682f9cbb77cd8": "skool notification-only (The AI Advantage — 1 new notification wrapper, no article text)",
+    "19d681bd6ba7f6db": "skool course promo notification (AI Enthusiasts — masterclass promotion post, not substantive newsletter content)",
+    "19d681b9b23c680b": "skool stat digest (Claude Code Pirates — weekly digest Mar 31, post/comment/member counts + top 10 snippet list)",
+    "19d67eddf149e413": "skool stat digest (AI Automation Mastery — weekly digest Mar 31, post/comment/member counts only)"
   },
   "errors": []
 }
