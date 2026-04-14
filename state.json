@@ -1,15 +1,24 @@
 {
-  "last_run": "2026-04-13T00:00:00Z",
+  "last_run": "2026-04-14T00:00:00Z",
   "last_run_status": "success",
   "last_processed_ids": [
-    "19d867db33ae62f7",
-    "19d83df4711d12c4",
-    "19d81ed838eb2ba6",
-    "19d81ca5bd73fe3d",
-    "19d81c732272ff2e"
+    "19d8ba0d1786a94c",
+    "19d8910b7888efef",
+    "19d875fecde9f9fb",
+    "19d8725ea71ea8b3",
+    "19d871423472b6a4",
+    "19d86efe66c1f879"
   ],
-  "newsletters_seen": 5,
+  "newsletters_seen": 6,
   "skipped_ids": [
+    "19d8b8aa8ddad44a",
+    "19d8a8e7bd1b6ad8",
+    "19d8a181af6e7aba",
+    "19d89435e5c07219",
+    "19d883b9bcd6c81e",
+    "19d875d4c8c0fe5e",
+    "19d8753f3764b238",
+    "19d874c1619ef974",
     "19d85e2b7698192b",
     "19d8570d41721766",
     "19d853468c716826",
@@ -121,6 +130,14 @@
     "19d394e1a8e51ebb"
   ],
   "skip_reasons": {
+    "19d8b8aa8ddad44a": "skool notification-only (Claude Code Pirates — Jay Tarzwell posted: Claude Code Radar Apr 14, no article text)",
+    "19d8a8e7bd1b6ad8": "skool notification-only (Claude Code Architects — Blake Sims posted: what are you building right now?)",
+    "19d8a181af6e7aba": "skool notification-only (Born Idea — Ramiel A. Sosa Monday Reset post)",
+    "19d89435e5c07219": "skool notification-only (AI Automation Mastery — Lucas Walter weekly check-in post)",
+    "19d883b9bcd6c81e": "skool notification-only (The AI Advantage — Tony Robbins/Dean Graziosi pre-event training post)",
+    "19d875d4c8c0fe5e": "skool notification-only (Claude Code Pirates — Jay Tarzwell posted: SDK vs CLI post, no article text)",
+    "19d8753f3764b238": "skool notification-only (AI Enthusiasts — Krystian Wojtarowicz plugins post)",
+    "19d874c1619ef974": "skool notification-only (AI Automation Society — Nate Herk posted: Claude Code vs Google Antigravity video)",
     "19d85e2b7698192b": "skool notification-only (AI Automation Agency Hub — 1 new notification since 3:03 am Apr 13)",
     "19d8570d41721766": "skool notification-only (Thinking Stuff — 4 new notifications since 1:04 am Apr 13)",
     "19d853468c716826": "skool notification-only (Thinking Stuff — 3 new notifications since 11:58 pm Apr 12)",
