@@ -1,6 +1,6 @@
 {
-  "last_run": "2026-04-14T00:00:00Z",
-  "last_run_status": "success",
+  "last_run": "2026-04-17T00:00:00Z",
+  "last_run_status": "error: Gmail MCP 502 Bad Gateway — service unavailable, no emails fetched",
   "last_processed_ids": [
     "19d8ba0d1786a94c",
     "19d8910b7888efef",
