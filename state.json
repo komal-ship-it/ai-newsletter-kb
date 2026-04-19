@@ -1,15 +1,23 @@
 {
-  "last_run": "2026-04-14T00:00:00Z",
+  "last_run": "2026-04-19T00:00:00Z",
   "last_run_status": "success",
   "last_processed_ids": [
-    "19d8ba0d1786a94c",
-    "19d8910b7888efef",
-    "19d875fecde9f9fb",
-    "19d8725ea71ea8b3",
-    "19d871423472b6a4",
-    "19d86efe66c1f879"
+    "19d91abdcccc6349",
+    "19d9352bd09a32c2",
+    "19d92119b943e22e",
+    "19d95f160c26e5bb",
+    "19d969926e6574a4",
+    "19d9688b3b7284eb",
+    "19d9662f9fa55989",
+    "19d986ba3a695704",
+    "19d9bf77526d86f1",
+    "19d9bbfce208753e",
+    "19d9b1480a9b2ac3",
+    "19d9baffca5baf1b",
+    "19da0d5801fb883a",
+    "19da0afa1b223d84"
   ],
-  "newsletters_seen": 6,
+  "newsletters_seen": 20,
   "skipped_ids": [
     "19d8b8aa8ddad44a",
     "19d8a8e7bd1b6ad8",
@@ -127,7 +135,13 @@
     "19d43e313f35f51a",
     "19d3e648387b2a28",
     "19d39a7a9cb3c2a6",
-    "19d394e1a8e51ebb"
+    "19d394e1a8e51ebb",
+    "19d974068b141c9e",
+    "19d93721f24c8283",
+    "19da566d07ae10e1",
+    "19d9b3653f7386a6",
+    "19da54a79d4bc17e",
+    "19da1ecf71030d06"
   ],
   "skip_reasons": {
     "19d8b8aa8ddad44a": "skool notification-only (Claude Code Pirates — Jay Tarzwell posted: Claude Code Radar Apr 14, no article text)",
@@ -246,7 +260,13 @@
     "19d43e313f35f51a": "skool stat-only digest (AI Automation Mastery)",
     "19d3e648387b2a28": "sender not in whitelist (dan@tldrnewsletter.com)",
     "19d39a7a9cb3c2a6": "skool stat-only digest (AI Enthusiasts)",
-    "19d394e1a8e51ebb": "skool stat-only digest (Born Idea)"
+    "19d394e1a8e51ebb": "skool stat-only digest (Born Idea)",
+    "19d974068b141c9e": "skool notification-only (AI Automation Society — Nate Herk video post about Claude Opus 4.7, notification wrapper only)",
+    "19d93721f24c8283": "skool notification-only (AI Automation Agency Hub — Liam Ottley post preview truncated, no article text)",
+    "19da566d07ae10e1": "skool stat-only digest (Born Idea — weekly digest Sat Apr 11 2026 — post/comment counts only)",
+    "19d9b3653f7386a6": "skool stat-only digest (Claude Code Architects + AI-OpenClaw-Code + AI Automation Society — weekly digest Fri Apr 10 2026 — post/comment counts only)",
+    "19da54a79d4bc17e": "skool notification-only (Claude Code Pirates — Jay Tarzwell Claude Code Radar Apr 19 preview, no article text)",
+    "19da1ecf71030d06": "skool notification-only (AI Automation Society — Nate Herk video post preview, no article text)"
   },
   "errors": []
 }
