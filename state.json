@@ -1,6 +1,6 @@
 {
-  "last_run": "2026-04-19T00:00:00Z",
-  "last_run_status": "success",
+  "last_run": "2026-04-24T00:00:00Z",
+  "last_run_status": "error",
   "last_processed_ids": [
     "19d91abdcccc6349",
     "19d9352bd09a32c2",
@@ -268,5 +268,10 @@
     "19da54a79d4bc17e": "skool notification-only (Claude Code Pirates — Jay Tarzwell Claude Code Radar Apr 19 preview, no article text)",
     "19da1ecf71030d06": "skool notification-only (AI Automation Society — Nate Herk video post preview, no article text)"
   },
-  "errors": []
+  "errors": [
+    {
+      "run": "2026-04-24T00:00:00Z",
+      "error": "Gmail MCP OAuth token expired — re-authorization required. No emails fetched."
+    }
+  ]
 }
